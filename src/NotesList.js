@@ -1,8 +1,11 @@
-function NotesList() {
+import React from 'react'
+import Note from './Note'
+
+export default function NotesList({notes}) {
 
     return (
-      <div>
-        <p>You clicked 0 times</p>
-      </div>
+      notes.map(note =>{
+        return <Note key={note.id} note = {note} />
+      })
     );
   }

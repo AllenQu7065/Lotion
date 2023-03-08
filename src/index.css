@@ -83,19 +83,33 @@ a {
   padding: 25px;
   cursor: pointer;
 }
+
 .sidebar-note-title {
   display: flex;
   justify-content: space-between;
 }
+
 .sidebar-note button {
   color: crimson;
 }
+
 .sidebar-note p {
   margin: 10px 0;
 }
+
 .sidebar-note small {
   display: block;
   color: #999;
+}
+
+.sidebar-note:hover {
+  background: #ddd;
+}
+
+.sidebar-note.active,
+.sidebar-note.active small {
+  background: #08c;
+  color: white;
 }
 
 

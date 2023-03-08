@@ -8,6 +8,29 @@ import Side from "./Side";
 
 function Layout() {
 
+    const [notes, setNotes] = useState([])
+
+    const [activeNote, setActiveNote] = useState(false)
+
+    const onAddNote = () =>{
+        const newNote = {
+            id: uuidv4(),
+            title: "Untitiled Note",
+            body: "",
+            lastModified: Date.now(),
+        };
+
+        setNotes([newNote, ...notes])
+    };
+    
+    const onDeleteNote = (idToDelete) =>{
+        setNotes(notes.filter((note) => note.id != idToDelete))
+    };
+
+    getActiveNote = () =>{
+        return notes.find((note) => note.id === activeNote)
+    }
+
     return (
         <>
             <div id="header">
@@ -21,10 +44,16 @@ function Layout() {
 
             <div id="content">
                 <div id="noteslist">
-                    <Side />
+                    <Side 
+                        notes={notes}  
+                        onAddNote={onAddNote} 
+                        onDeleteNote={onDeleteNote} 
+                        activeNote={activeNote}
+                        setActiveNote={setActiveNote}
+                    />
                 </div>
                 <div id="notes">
-                    <Outlet />
+                    <Outlet context={[getActiveNote()]}/>
                 </div>
             </div>
         </>

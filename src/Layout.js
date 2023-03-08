@@ -5,12 +5,17 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { Outlet } from "react-router-dom";
 import Side from "./Side";
+import Main from "./Main";
 
 function Layout() {
 
-    const [notes, setNotes] = useState([])
+    const [notes, setNotes] = useState(localStorage.notes ? JSON.parse(localStorage.notes) : []);
 
-    const [activeNote, setActiveNote] = useState(false)
+    useEffect(() => {
+        localStorage.setItem("notes", JSON.stringify(notes));
+      }, [notes]);
+
+    const [activeNote, setActiveNote] = useState(false);
 
     const onAddNote = () =>{
         const newNote = {
@@ -21,15 +26,34 @@ function Layout() {
         };
 
         setNotes([newNote, ...notes])
+        setActiveNote(newNote.id);
     };
     
     const onDeleteNote = (idToDelete) =>{
         setNotes(notes.filter((note) => note.id != idToDelete))
+    }
+
+    const onUpdateNote = (updatedNote) => {
+        const updatedNotesArr = notes.map((note) => {
+          if (note.id === updatedNote.id) {
+            return updatedNote;
+          }
+    
+          return note;
+        });
+    
+        setNotes(updatedNotesArr);
     };
 
-    getActiveNote = () =>{
-        return notes.find((note) => note.id === activeNote)
-    }
+    const getActiveNote = () => {
+        if (activeNote === false){
+            return null
+        }
+        if (notes === null){
+            return null
+        }
+        return notes.find((note) => note.id === activeNote);
+    };
 
     return (
         <>
@@ -53,7 +77,10 @@ function Layout() {
                     />
                 </div>
                 <div id="notes">
-                    <Outlet context={[getActiveNote()]}/>
+                    <Main
+                        activeNote={getActiveNote()}
+                        onUpdateNote={onUpdateNote} 
+                    />
                 </div>
             </div>
         </>

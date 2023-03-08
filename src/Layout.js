@@ -5,8 +5,55 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { Outlet } from "react-router-dom";
 import Side from "./Side";
+import Main from "./Main";
 
 function Layout() {
+
+    const [notes, setNotes] = useState(localStorage.notes ? JSON.parse(localStorage.notes) : []);
+
+    useEffect(() => {
+        localStorage.setItem("notes", JSON.stringify(notes));
+      }, [notes]);
+
+    const [activeNote, setActiveNote] = useState(false);
+
+    const onAddNote = () =>{
+        const newNote = {
+            id: uuidv4(),
+            title: "Untitiled Note",
+            body: "",
+            lastModified: Date.now(),
+        };
+
+        setNotes([newNote, ...notes])
+        setActiveNote(newNote.id);
+    };
+    
+    const onDeleteNote = (idToDelete) =>{
+        setNotes(notes.filter((note) => note.id != idToDelete))
+    }
+
+    const onUpdateNote = (updatedNote) => {
+        const updatedNotesArr = notes.map((note) => {
+          if (note.id === updatedNote.id) {
+            return updatedNote;
+          }
+    
+          return note;
+        });
+    
+        setNotes(updatedNotesArr);
+    };
+
+    const getActiveNote = () => {
+        if (activeNote === false){
+            return null
+        }
+        if (notes === null){
+            return null
+        }
+        return notes.find((note) => note.id === activeNote);
+    };
 
     return (
         <>
@@ -21,10 +68,19 @@ function Layout() {
 
             <div id="content">
                 <div id="noteslist">
-                    <Side />
+                    <Side 
+                        notes={notes}  
+                        onAddNote={onAddNote} 
+                        onDeleteNote={onDeleteNote} 
+                        activeNote={activeNote}
+                        setActiveNote={setActiveNote}
+                    />
                 </div>
                 <div id="notes">
-                    <Outlet />
+                    <Main
+                        activeNote={getActiveNote()}
+                        onUpdateNote={onUpdateNote} 
+                    />
                 </div>
             </div>
         </>

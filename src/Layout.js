@@ -80,6 +80,7 @@ function Layout() {
                     <Main
                         activeNote={getActiveNote()}
                         onUpdateNote={onUpdateNote} 
+                        onDeleteNote={onDeleteNote}
                     />
                 </div>
             </div>

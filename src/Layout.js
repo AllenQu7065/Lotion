@@ -55,7 +55,6 @@ function Layout() {
         if (notes === null){
             return null
         }
-        console.log(activeNote.lastModified)
         return notes.find((note) => note.id === activeNote);
         
     };
@@ -82,11 +81,7 @@ function Layout() {
                     />
                 </div>
                 <div id="notes">
-                    <Main
-                        activeNote={getActiveNote()}
-                        onUpdateNote={onUpdateNote} 
-                        onDeleteNote={onDeleteNote}
-                    />
+                    <Outlet context={[notes, setNotes, activeNote, setActiveNote]}/>
                 </div>
             </div>
         </>

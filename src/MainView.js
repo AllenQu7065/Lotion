@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import Layout from "./Layout"
+import { useOutletContext } from "react-router-dom";
 
 const options = {
   year: "numeric",
@@ -21,15 +21,48 @@ const formatDate = (when) => {
 };
 
 
-function Main({ activeNote, onUpdateNote, onDeleteNote}) {
+function MainView() {
+
+    const [notes, setNotes, activeNote, setActiveNote] = useOutletContext();
+
+    const onDeleteNote = (idToDelete) =>{
+      const answer = window.confirm("Are you sure?");
+      if (answer) {
+          setNotes(notes.filter((note) => note.id !== idToDelete))
+      }
+  }
+
+  const onUpdateNote = (updatedNote) => {
+      const updatedNotesArr = notes.map((note) => {
+        if (note.id === updatedNote.id) {
+          return updatedNote;
+        }
+  
+        return note;
+      });
+  
+      setNotes(updatedNotesArr);
+  };
+
+  const getActiveNote = () => {
+      if (activeNote === false){
+          return null
+      }
+      if (notes === null){
+          return null
+      }
+      return notes.find((note) => note.id === activeNote);
+    };
+
+    var theActiveNote = getActiveNote()
 
     const useStateCheck = () => {
-      if (!activeNote){
+      if (!theActiveNote){
         return ''
       }
       else{
-        console.log(activeNote.body)
-        return activeNote.body
+        console.log(theActiveNote.body)
+        return theActiveNote.body
       }
     }
    
@@ -38,7 +71,7 @@ function Main({ activeNote, onUpdateNote, onDeleteNote}) {
 
     const onEditTitle = (value) => {
         onUpdateNote({
-          ...activeNote,
+          ...theActiveNote,
           title: value,
           lastModified: Date.now("en-US"),
         });
@@ -46,7 +79,7 @@ function Main({ activeNote, onUpdateNote, onDeleteNote}) {
 
     const onEditBody = () => {
         onUpdateNote({
-          ...activeNote,
+          ...theActiveNote,
           body: value,
           lastModified: Date.now("en-US"),
         });
@@ -57,44 +90,45 @@ function Main({ activeNote, onUpdateNote, onDeleteNote}) {
       var offset = (new Date()).getTimezoneOffset() * 60000;
       const date = new Date(localDate + offset);
       onUpdateNote({
-        ...activeNote,
+        ...theActiveNote,
         lastModified: date,
       });
   };
 
     const checkValue = () => {
-      if(!activeNote){
+      if(!theActiveNote){
         return
       }
-      if (activeNote.id === prevID){
+      if (theActiveNote.id === prevID){
         return
       }
-      setValue(activeNote.body)
-      setPrevID(activeNote.id)
+      setValue(theActiveNote.body)
+      setPrevID(theActiveNote.id)
     }
 
     useEffect(() => {
       checkValue()
+      theActiveNote = getActiveNote()
     });
     
 
-    if (!activeNote) return <div className="no-active-note">Select a note, or create a new one.</div>;
+    if (!theActiveNote) return <div className="no-active-note">Select a note, or create a new one.</div>;
 
     return (
         <div className="main">
           <div className="main-header">
             <div className="main-header-text">
-              <input type="text" id="title" value={activeNote.title} onChange={(e) => onEditTitle(e.target.value)} />
-              <input id="time" type="datetime-local"  value={(formatDate(activeNote.lastModified))} onChange={onEditTime} />
+              <input type="text" id="title" value={theActiveNote.title} onChange={(e) => onEditTitle(e.target.value)} />
+              <input id="time" type="datetime-local"  value={(formatDate(theActiveNote.lastModified))} onChange={onEditTime} />
             </div>
             <div className="main-header-save" onClick={onEditBody} > Edit </div>
-            <div className="main-header-delete" onClick={() => onDeleteNote(activeNote.id)} > Delete </div>
+            <div className="main-header-delete" onClick={() => onDeleteNote(theActiveNote.id)} > Delete </div>
           </div>
-          <ReactQuill theme="snow"  value={value} defaultValue={activeNote.body} onChange={setValue} placeholder={"Type something here..."} />
+          <ReactQuill theme="snow"  value={value} defaultValue={theActiveNote.body} onChange={setValue} placeholder={"Type something here..."} />
 
         </div>
     )
     
   };
   
-  export default Main;
+  export default MainView;

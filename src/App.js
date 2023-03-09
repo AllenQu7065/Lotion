@@ -16,7 +16,8 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route path="notes/edit" element={<Main />}></Route>
+          <Route path="/notes" element={<MainView />}></Route>
+          <Route path="/notes/edit" element={<Main />}></Route>
         </Route>
       </Routes>
     </BrowserRouter>

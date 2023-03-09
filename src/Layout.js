@@ -22,7 +22,7 @@ function Layout() {
             id: uuidv4(),
             title: "Untitiled Note",
             body: "",
-            lastModified: Date.now(),
+            lastModified: Date.now("en-US"),
         };
 
         setNotes([newNote, ...notes])
@@ -30,7 +30,10 @@ function Layout() {
     };
     
     const onDeleteNote = (idToDelete) =>{
-        setNotes(notes.filter((note) => note.id != idToDelete))
+        const answer = window.confirm("Are you sure?");
+        if (answer) {
+            setNotes(notes.filter((note) => note.id != idToDelete))
+        }
     }
 
     const onUpdateNote = (updatedNote) => {
@@ -52,7 +55,9 @@ function Layout() {
         if (notes === null){
             return null
         }
+        console.log(activeNote.lastModified)
         return notes.find((note) => note.id === activeNote);
+        
     };
 
     return (

@@ -1,5 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 
+const options = {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+  hour: "numeric",
+  minute: "numeric",
+};
+
 function Side({ notes, onAddNote, onDeleteNote, activeNote, setActiveNote }) {
 
     return (
@@ -17,7 +25,7 @@ function Side({ notes, onAddNote, onDeleteNote, activeNote, setActiveNote }) {
                 </div>
                 <td className="sidebar-note-sub" dangerouslySetInnerHTML={{__html: note.body.substr(0, 100)}} />
                 <small className="note-date">
-                   Last modified [{new Date(note.lastModified).toLocaleDateString("en-GB", {hour: "2-digit", minute: "2-digit"})}] 
+                   Last modified [{new Date(note.lastModified).toLocaleDateString("en-US", options)}] 
                 </small>
             </div>
           ))}

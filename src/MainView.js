@@ -87,7 +87,7 @@ function Main({ activeNote, onUpdateNote, onDeleteNote}) {
               <input type="text" id="title" value={activeNote.title} onChange={(e) => onEditTitle(e.target.value)} />
               <input id="time" type="datetime-local"  value={(formatDate(activeNote.lastModified))} onChange={onEditTime} />
             </div>
-            <div className="main-header-save" onClick={onEditBody} > Save </div>
+            <div className="main-header-save" onClick={onEditBody} > Edit </div>
             <div className="main-header-delete" onClick={() => onDeleteNote(activeNote.id)} > Delete </div>
           </div>
           <ReactQuill theme="snow"  value={value} defaultValue={activeNote.body} onChange={setValue} placeholder={"Type something here..."} />

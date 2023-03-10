@@ -1,15 +1,12 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { v4 as uuidv4 } from 'uuid';
-import { BrowserRouter, Routes, Route, useParams, useOutletContext } from "react-router-dom";
-import ReactQuill from 'react-quill';
+import { useNavigate } from "react-router-dom";
 import 'react-quill/dist/quill.snow.css';
 import { Outlet } from "react-router-dom";
 import Side from "./Side";
-import Main from "./Main";
+
 
 function Layout() {
-
-    const {id}=useParams();
 
     const [notes, setNotes] = useState(localStorage.notes ? JSON.parse(localStorage.notes) : []);
 
@@ -21,6 +18,8 @@ function Layout() {
     const [activeNote, setActiveNote] = useState(false);
 
     const [visible, setVisible] = useState(true);
+
+    const navigate = useNavigate();
 
     const toggleVisible = () =>{
         setVisible(!visible)
@@ -36,37 +35,17 @@ function Layout() {
 
         setNotes([newNote, ...notes])
         setActiveNote(newNote.id);
+        navigate('/notes/1')
     };
     
     const onDeleteNote = (idToDelete) =>{
         const answer = window.confirm("Are you sure?");
         if (answer) {
             setNotes(notes.filter((note) => note.id != idToDelete))
+            navigate('/notes');
         }
     }
 
-    const onUpdateNote = (updatedNote) => {
-        const updatedNotesArr = notes.map((note) => {
-          if (note.id === updatedNote.id) {
-            return updatedNote;
-          }
-    
-          return note;
-        });
-    
-        setNotes(updatedNotesArr);
-    };
-
-    const getActiveNote = () => {
-        if (activeNote === false){
-            return null
-        }
-        if (notes === null){
-            return null
-        }
-        return notes.find((note) => note.id === activeNote);
-        
-    };
 
     return (
         <>
@@ -90,7 +69,7 @@ function Layout() {
                     />
                 </div>}
                 <div id="notes">
-                    <Outlet context={[notes, setNotes, activeNote, setActiveNote]}/>
+                    <Outlet context={[notes, setNotes, activeNote]}/>
                 </div>
             </div>
         </>

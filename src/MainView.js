@@ -1,15 +1,7 @@
-import React, { useState, useRef, useEffect } from "react";
-import ReactQuill from 'react-quill';
+import React, { useState, useEffect } from "react";
 import 'react-quill/dist/quill.snow.css';
-import { useOutletContext, Link, useParams, useNavigate } from "react-router-dom";
+import { useOutletContext, Link, useNavigate } from "react-router-dom";
 
-const options = {
-  year: "numeric",
-  month: "long",
-  day: "numeric",
-  hour: "numeric",
-  minute: "numeric",
-};
 
 const formatDate = (when) => {
   var offset = (new Date()).getTimezoneOffset() * 60000;
@@ -23,9 +15,7 @@ const formatDate = (when) => {
 
 function MainView() {
 
-    const [notes, setNotes, activeNote, setActiveNote] = useOutletContext();
-
-    const { id } = useParams();
+    const [notes, setNotes, activeNote] = useOutletContext();
 
     const navigate = useNavigate();
 
@@ -33,8 +23,8 @@ function MainView() {
       const answer = window.confirm("Are you sure?");
       if (answer) {
           setNotes(notes.filter((note) => note.id !== idToDelete))
+          navigate(`/notes`)
       }
-      navigate(`/notes`)
     }
 
   const onUpdateNote = (updatedNote) => {
@@ -66,7 +56,6 @@ function MainView() {
         return ''
       }
       else{
-        console.log(theActiveNote.body)
         return theActiveNote.body
       }
     }
@@ -82,13 +71,6 @@ function MainView() {
         });
     };
 
-    const onEditBody = () => {
-        onUpdateNote({
-          ...theActiveNote,
-          body: value,
-          lastModified: Date.now("en-US"),
-        });
-    };
 
     const onEditTime = (e) => {
       var localDate = new Date(e.target.value);
@@ -111,9 +93,17 @@ function MainView() {
       setPrevID(theActiveNote.id)
     }
 
+    const getIndex = () => {
+      var num = notes.findIndex((note) => note.id === activeNote);
+      return num + 1;
+    }
+
+    var num = getIndex();
+
     useEffect(() => {
       checkValue()
       theActiveNote = getActiveNote()
+      getIndex()
     });
     
 
@@ -126,7 +116,7 @@ function MainView() {
               <input type="text" id="title" readOnly={true} value={theActiveNote.title} onChange={(e) => onEditTitle(e.target.value)} />
               <input id="time" type="datetime-local" readOnly={true}  value={(formatDate(theActiveNote.lastModified))} onChange={onEditTime} />
             </div>
-            <Link to={`/notes/{id}/edit`} className="main-header-save" > Edit </Link>
+            <Link to={`/notes/`+num+`/edit`} className="main-header-save" > Edit </Link>
             <div className="main-header-delete" onClick={() => onDeleteNote(theActiveNote.id)} > Delete </div>
           </div>
           <p dangerouslySetInnerHTML={{__html: value}} ></p>

@@ -1,5 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
-import { useOutletContext, Link, useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const options = {
   year: "numeric",
@@ -11,7 +10,19 @@ const options = {
 
 function Side({ notes, onAddNote, onDeleteNote, activeNote, setActiveNote }) {
 
-  const { id } = useParams();
+  const navigate = useNavigate();
+
+  const getIndex = (id) => {
+    var num = notes.findIndex((note) => note.id === id);
+    return num + 1;
+  }
+
+  const twoFunc = (id) =>{
+    setActiveNote(id);
+    var num = getIndex(id);
+    navigate((`/notes/`+num))
+  }
+
 
     return (
       <div className="sidebar">
@@ -21,7 +32,7 @@ function Side({ notes, onAddNote, onDeleteNote, activeNote, setActiveNote }) {
         </div>
         <div className="sidebar-notes">
           {notes.map((note) => (
-            <div className={`sidebar-note ${note.id === activeNote && "active"}`} onClick={() => setActiveNote(note.id)}>
+            <div className={`sidebar-note ${note.id === activeNote && "active"}`} onClick={() => twoFunc(note.id)}>
                 <div className="sidebar-note-title">
                     <strong className="sidebar-note-title-strong">{note.title}</strong>
                     <div className="sidebar-note-title-delete"onClick={() => onDeleteNote(note.id)}>Delete</div>

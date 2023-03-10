@@ -9,13 +9,22 @@ import Main from "./Main";
 
 function Layout() {
 
+    const {id}=useParams();
+
     const [notes, setNotes] = useState(localStorage.notes ? JSON.parse(localStorage.notes) : []);
 
     useEffect(() => {
         localStorage.setItem("notes", JSON.stringify(notes));
       }, [notes]);
 
+    
     const [activeNote, setActiveNote] = useState(false);
+
+    const [visible, setVisible] = useState(true);
+
+    const toggleVisible = () =>{
+        setVisible(!visible)
+    }
 
     const onAddNote = () =>{
         const newNote = {
@@ -62,7 +71,7 @@ function Layout() {
     return (
         <>
             <div id="header">
-                <div id="Sidebar" className="Sidebar"><h2>&#9776;</h2></div>
+                <div id="Sidebar" className="Sidebar" onClick={toggleVisible}><h2>&#9776;</h2></div>
                 <div id="titlebox">
                     <h1 id="title">Lotion</h1>
                     <p id="subtitle">Like Notion But Worse</p>
@@ -71,7 +80,7 @@ function Layout() {
             </div>
 
             <div id="content">
-                <div id="noteslist">
+                {visible && <div id="noteslist">
                     <Side 
                         notes={notes}  
                         onAddNote={onAddNote} 
@@ -79,7 +88,7 @@ function Layout() {
                         activeNote={activeNote}
                         setActiveNote={setActiveNote}
                     />
-                </div>
+                </div>}
                 <div id="notes">
                     <Outlet context={[notes, setNotes, activeNote, setActiveNote]}/>
                 </div>

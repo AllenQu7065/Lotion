@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, Link, useParams, useNavigate } from "react-router-dom";
 
 const options = {
   year: "numeric",
@@ -25,11 +25,16 @@ function Main() {
 
     const [notes, setNotes, activeNote, setActiveNote] = useOutletContext();
 
+    const { id } = useParams();
+
+    const navigate = useNavigate();
+
     const onDeleteNote = (idToDelete) =>{
       const answer = window.confirm("Are you sure?");
       if (answer) {
           setNotes(notes.filter((note) => note.id !== idToDelete))
       }
+      navigate(`/notes`)
   }
 
   const onUpdateNote = (updatedNote) => {
@@ -121,7 +126,7 @@ function Main() {
               <input type="text" id="title" value={theActiveNote.title} onChange={(e) => onEditTitle(e.target.value)} />
               <input id="time" type="datetime-local"  value={(formatDate(theActiveNote.lastModified))} onChange={onEditTime} />
             </div>
-            <div className="main-header-save" onClick={onEditBody} > Save </div>
+            <Link to={`/notes/{id}`}  className="main-header-save" onClick={onEditBody} > Save </Link>
             <div className="main-header-delete" onClick={() => onDeleteNote(theActiveNote.id)} > Delete </div>
           </div>
           <ReactQuill theme="snow"  value={value} defaultValue={theActiveNote.body} onChange={setValue} placeholder={"Type something here..."} />

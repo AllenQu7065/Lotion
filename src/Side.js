@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useOutletContext, Link, useParams, useNavigate } from "react-router-dom";
 
 const options = {
   year: "numeric",
@@ -9,6 +10,8 @@ const options = {
 };
 
 function Side({ notes, onAddNote, onDeleteNote, activeNote, setActiveNote }) {
+
+  const { id } = useParams();
 
     return (
       <div className="sidebar">
